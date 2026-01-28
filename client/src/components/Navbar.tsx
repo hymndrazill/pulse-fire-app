@@ -1,16 +1,18 @@
-import { LogOut, Zap } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
-import { useLogout } from '../hooks/useAuth';
-import { disconnectSocket } from '../lib/socket';
+import { LogOut, Zap, Sun, Moon } from "lucide-react";
+import { useAuthStore } from "../store/authStore";
+import { useLogout } from "../hooks/useAuth";
+import { disconnectSocket } from "../lib/socket";
+import { useThemeStore } from "../store/themeStore";
 
 const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useLogout();
-
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const handleLogout = () => {
     disconnectSocket();
     logout();
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
   return (
@@ -20,7 +22,10 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Zap className="w-8 h-8 text-white animate-pulse" fill="currentColor" />
+              <Zap
+                className="w-8 h-8 text-white animate-pulse"
+                fill="currentColor"
+              />
               <div className="absolute inset-0 bg-white/20 rounded-full blur-xl animate-pulse-slow"></div>
             </div>
             <h1 className="text-2xl font-bold text-white tracking-tight">
@@ -35,10 +40,32 @@ const Navbar = () => {
               <p className="text-white/80 text-sm">@{user?.username}</p>
             </div>
             <img
-              src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}`}
+              src={
+                user?.avatar ||
+                `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}`
+              }
               alt={user?.displayName}
               className="w-10 h-10 rounded-full ring-2 ring-white/50 hover:ring-white transition-all"
             />
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle dark mode"
+              className="
+    p-2 rounded-lg 
+    bg-white/10 hover:bg-white/20 
+    text-white 
+    transition-all 
+    backdrop-blur-sm 
+    border border-white/20
+  "
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all backdrop-blur-sm border border-white/20"

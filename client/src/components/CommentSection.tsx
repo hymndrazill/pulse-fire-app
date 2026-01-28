@@ -64,7 +64,7 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Write a comment..."
-            className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
+            className="flex-1 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-full focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all dark:text-white dark:placeholder-gray-400"
           />
           <button
             type="submit"
@@ -81,7 +81,7 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
         {comments?.map((comment) => (
           <div
             key={comment._id}
-            className="flex gap-3 p-3 rounded-lg hover:bg-white transition-colors animate-fade-in"
+            className="flex gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors animate-fade-in"
           >
             <img
               src={comment.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.username}`}
@@ -90,21 +90,21 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm text-gray-900">
+                <span className="font-semibold text-sm text-gray-900 dark:text-white">
                   {comment.user.displayName}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   {formatDistanceToNow(new Date(comment.createdAt), {
                     addSuffix: true,
                   })}
                 </span>
               </div>
-              <p className="text-gray-700 mt-1">{comment.content}</p>
+              <p className="text-gray-700 dark:text-gray-300 mt-1">{comment.content}</p>
             </div>
             {user?._id === comment.user._id && (
               <button
                 onClick={() => handleDelete(comment._id)}
-                className="text-gray-400 hover:text-red-600 transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -112,7 +112,7 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
           </div>
         ))}
         {comments?.length === 0 && (
-          <p className="text-center text-gray-500 py-4">
+          <p className="text-center text-gray-500 dark:text-gray-400 py-4">
             No comments yet. Be the first to comment!
           </p>
         )}

@@ -30,7 +30,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const isOwner = user?._id === post.user._id;
 
   return (
-    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 animate-slide-up">
+    <div className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-slate-700 animate-slide-up">
       {/* Header */}
       <div className="p-5 flex items-start justify-between">
         <div className="flex items-center gap-3">
@@ -46,8 +46,8 @@ const PostCard = ({ post }: PostCardProps) => {
             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
           </div>
           <div>
-            <h3 className="font-bold text-gray-900">{post.user.displayName}</h3>
-            <p className="text-sm text-gray-500">@{post.user.username}</p>
+            <h3 className="font-bold text-gray-900 dark:text-white">{post.user.displayName}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">@{post.user.username}</p>
           </div>
         </div>
 
@@ -55,12 +55,12 @@ const PostCard = ({ post }: PostCardProps) => {
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors"
             >
-              <MoreVertical className="w-5 h-5 text-gray-600" />
+              <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-gray-200 dark:border-slate-700 py-1 z-10">
                 <button
                   onClick={handleDelete}
                   className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center gap-2"
@@ -76,7 +76,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
       {/* Content */}
       <div className="px-5 pb-4">
-        <p className="text-gray-800 text-lg leading-relaxed whitespace-pre-wrap">
+        <p className="text-gray-800 dark:text-gray-200 text-lg leading-relaxed whitespace-pre-wrap">
           {post.content}
         </p>
         {post.imageUrl && (
@@ -89,7 +89,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
+      <div className="px-5 py-4 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <button
             onClick={handleLike}
@@ -123,7 +123,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
       {/* Comments Section */}
       {showComments && (
-        <div className="border-t border-gray-200 bg-gray-50">
+        <div className="border-t border-gray-100 dark:border-slate-700">
           <CommentSection postId={post._id} />
         </div>
       )}
