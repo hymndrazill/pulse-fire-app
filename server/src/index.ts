@@ -8,7 +8,8 @@ import authRoutes from "./routes/auth";
 import postRoutes from "./routes/posts";
 import commentRoutes from "./routes/comments";
 
-const PORT = process.env.PORT || "4003"
+const onlineUsers: Record<string, Set<string>> = {};
+const PORT = process.env.PORT || "4003";
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/pulse-social";
 const JWT_SECRET =
@@ -58,6 +59,10 @@ fastify.get("/health", async () => {
   return { status: "ok", timestamp: new Date().toISOString() };
 });
 
+fastify.get("/api/users/online", async () => {
+  return { onlineUsers: Object.keys(onlineUsers) };
+});
+
 const start = async () => {
   try {
     await connectDatabase(MONGODB_URI);
@@ -89,9 +94,18 @@ const start = async () => {
 
     io.on("connection", (socket) => {
       const username = socket.data.user?.username || "Anonymous";
+      const userId = socket.data.user?.userId;
       console.log(`User connected: ${username} (${socket.id})`);
 
       socket.join("feed");
+
+      if (userId) {
+        if (!onlineUsers[userId]) onlineUsers[userId] = new Set();
+        onlineUsers[userId].add(socket.id);
+
+        // show connected users
+        io.emit("user:status", { userId, isOnline: true });
+      }
 
       // Handle new posts
       socket.on("post:created", (post) => {
@@ -99,13 +113,13 @@ const start = async () => {
         socket.to("feed").emit("post:new", post);
       });
 
-      // Handle new comment 
+      // Handle new comment
       socket.on("comment:created", (data) => {
         console.log("New comment on post:", data.postId);
         io.to("feed").emit("comment:new", data);
       });
 
-      // Handle like 
+      // Handle like
       socket.on("post:liked", (data) => {
         console.log("Post liked:", data.postId);
         socket.to("feed").emit("post:like", data);
@@ -129,6 +143,14 @@ const start = async () => {
       // Handle disconnection
       socket.on("disconnect", () => {
         console.log(` User disconnected: ${username} (${socket.id})`);
+
+        if (userId && onlineUsers[userId]) {
+          onlineUsers[userId].delete(socket.id);
+          if (onlineUsers[userId].size === 0) {
+            delete onlineUsers[userId];
+            io.emit("user:status", { userId, isOnline: false });
+          }
+        }
       });
     });
 

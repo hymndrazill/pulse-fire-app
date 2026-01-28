@@ -4,6 +4,8 @@ import { formatDistanceToNow } from "date-fns";
 import { Post } from "../types";
 import { useToggleLike, useDeletePost } from "../hooks/usePosts";
 import { useAuthStore } from "../store/authStore";
+import { useOnlineStore } from "../store/onlineStore";
+import { useOnlineUsers } from "../hooks/useOnlineUsers";
 import CommentSection from "./CommentSection";
 
 interface PostCardProps {
@@ -14,13 +16,14 @@ const PostCard = ({ post }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const user = useAuthStore((state) => state.user);
+  const onlineUsers = useOnlineStore((state) => state.onlineUsers);
+  useOnlineUsers();
   const toggleLike = useToggleLike();
   const deletePost = useDeletePost();
 
   const handleLike = () => {
     toggleLike.mutate(post._id);
   };
-  console.log("post:>",post)
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this post?")) {
       deletePost.mutate(post._id);
@@ -43,11 +46,19 @@ const PostCard = ({ post }: PostCardProps) => {
               alt={post.user.displayName}
               className="w-12 h-12 rounded-full ring-2 ring-primary-200"
             />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            <div
+              className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white transition-colors duration-300 ${
+                onlineUsers[post.user._id] ? "bg-green-500" : "bg-gray-400"
+              }`}
+            />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white">{post.user.displayName}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">@{post.user.username}</p>
+            <h3 className="font-bold text-gray-900 dark:text-white">
+              {post.user.displayName}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              @{post.user.username}
+            </p>
           </div>
         </div>
 

@@ -5,6 +5,7 @@ export interface User {
   displayName: string;
   avatar?: string;
   bio?: string;
+  isOnline?: boolean;
 }
 
 export interface Post {
@@ -35,6 +36,7 @@ export interface Comment {
     username: string;
     displayName: string;
     avatar?: string;
+    isOnline?: boolean;
   };
 }
 

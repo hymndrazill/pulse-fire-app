@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Send, Trash2 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { useComments, useCreateComment, useDeleteComment } from '../hooks/useComments';
-import { useAuthStore } from '../store/authStore';
-import { useSocket } from '../hooks/useSocket';
+import { useState, useEffect } from "react";
+import { Send, Trash2 } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import {
+  useComments,
+  useCreateComment,
+  useDeleteComment,
+} from "../hooks/useComments";
+import { useAuthStore } from "../store/authStore";
+import { useSocket } from "../hooks/useSocket";
 
 interface CommentSectionProps {
   postId: string;
 }
 
 const CommentSection = ({ postId }: CommentSectionProps) => {
-  const [commentText, setCommentText] = useState('');
+  const [commentText, setCommentText] = useState("");
   const user = useAuthStore((state) => state.user);
   const { data: comments, refetch } = useComments(postId);
   const createComment = useCreateComment(postId);
@@ -24,10 +28,10 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
       }
     };
 
-    on('comment:new', handleNewComment);
+    on("comment:new", handleNewComment);
 
     return () => {
-      off('comment:new', handleNewComment);
+      off("comment:new", handleNewComment);
     };
   }, [postId, on, off, refetch]);
 
@@ -37,14 +41,14 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
 
     try {
       await createComment.mutateAsync(commentText);
-      setCommentText('');
+      setCommentText("");
     } catch (error) {
-      console.error('Failed to create comment:', error);
+      console.error("Failed to create comment:", error);
     }
   };
 
   const handleDelete = (commentId: string) => {
-    if (window.confirm('Delete this comment?')) {
+    if (window.confirm("Delete this comment?")) {
       deleteComment.mutate(commentId);
     }
   };
@@ -54,7 +58,10 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
       {/* Add comment */}
       <form onSubmit={handleSubmit} className="flex gap-3">
         <img
-          src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}`}
+          src={
+            user?.avatar ||
+            `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}`
+          }
           alt={user?.displayName}
           className="w-10 h-10 rounded-full ring-2 ring-accent-200"
         />
@@ -83,11 +90,21 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
             key={comment._id}
             className="flex gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors animate-fade-in"
           >
-            <img
-              src={comment.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.username}`}
-              alt={comment.user.displayName}
-              className="w-8 h-8 rounded-full"
-            />
+            <div className="relative">
+              <img
+                src={
+                  comment.user.avatar ||
+                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.username}`
+                }
+                alt={comment.user.displayName}
+                className="w-8 h-8 rounded-full"
+              />
+              <div
+                className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800
+      ${comment.user.isOnline ? "bg-green-500 animate-pulse-slow" : "bg-gray-400 dark:bg-gray-500"}`}
+              />
+            </div>
+
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-sm text-gray-900 dark:text-white">
@@ -99,7 +116,9 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
                   })}
                 </span>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 mt-1">{comment.content}</p>
+              <p className="text-gray-700 dark:text-gray-300 mt-1">
+                {comment.content}
+              </p>
             </div>
             {user?._id === comment.user._id && (
               <button
