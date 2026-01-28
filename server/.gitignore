@@ -1,0 +1,61 @@
+# Node modules
+/node_modules/
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build directories
+/dist/
+/build/
+
+# Dependency directories
+/bundle/
+/pnpm-lock.yaml
+/yarn.lock
+/package-lock.json
+
+# npm package files (optional)
+*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store    # macOS
+Thumbs.db    # Windows
+
+# IDE and editor directories
+.vscode/
+.idea/
+*.swp        # Vim
+
+# Coverage directory used by tools like istanbul
+/coverage/
+
+# Docker
+.dockerignore
+
+# Kubernetes
+*.k8s.yml
+*.k8s.yaml
+
+# TypeScript
+*.tsbuildinfo
+
+# Ignore build outputs
+/dist/
+
+# Optional: Ignore local config files for tools
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Optional: Ignore database files
+*.sqlite3
+*.db
