@@ -3,7 +3,6 @@ import api from '../lib/api';
 import { Post } from '../types';
 import { getSocket } from '../lib/socket';
 
-// Fetch posts
 export const usePosts = () => {
   return useQuery({
     queryKey: ['posts'],
@@ -14,7 +13,6 @@ export const usePosts = () => {
   });
 };
 
-// Create post
 export const useCreatePost = () => {
   const queryClient = useQueryClient();
   const socket = getSocket();
@@ -27,7 +25,6 @@ export const useCreatePost = () => {
     onSuccess: (newPost) => {
       queryClient.setQueryData<Post[]>(['posts'], (old = []) => [newPost, ...old]);
       
-      // Emit socket event for real-time updates
       if (socket?.connected) {
         socket.emit('post:created', newPost);
       }
@@ -35,7 +32,6 @@ export const useCreatePost = () => {
   });
 };
 
-// Toggle like
 export const useToggleLike = () => {
   const queryClient = useQueryClient();
   const socket = getSocket();
@@ -47,7 +43,7 @@ export const useToggleLike = () => {
       );
       return { postId, ...data };
     },
-    onMutate: async (postId: string) => {
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['posts'] });
       
       const previousPosts = queryClient.getQueryData<Post[]>(['posts']);
@@ -55,20 +51,18 @@ export const useToggleLike = () => {
       return { previousPosts };
     },
     onSuccess: (data) => {
-      // Update the posts query with the new like data
       queryClient.setQueryData<Post[]>(['posts'], (old = []) =>
         old.map((post) =>
           post._id === data.postId
             ? {
                 ...post,
                 isLiked: data.isLiked,
-                likes: Array(data.likesCount).fill('') // Create array of correct length for display
+                likes: Array(data.likesCount).fill('') 
               }
             : post
         )
       );
 
-      // Emit socket event
       if (socket?.connected) {
         socket.emit('post:liked', data);
       }
@@ -81,7 +75,6 @@ export const useToggleLike = () => {
   });
 };
 
-// Delete post
 export const useDeletePost = () => {
   const queryClient = useQueryClient();
 
